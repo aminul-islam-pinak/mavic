@@ -15,24 +15,19 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
-
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Link,
-    useParams,
     useRouteMatch
 } from "react-router-dom";
-import DashboardHome from '../DashboardHome/DashboardHome';
-
-
+import { Button } from '@mui/material';
 import useAuth from '../../../hooks/useAuth';
+import DashboardHome from '../DashboardHome/DashboardHome';
 import AdminRoute from '../../Login/AdminRoute/AdminRoute';
 import MakeAdmin from '../MakeAdmin/MakeAdmin';
+import ManageAllOrder from '../ManageAllOrder/ManageAllOrder';
 import Payment from '../Payment/Payment';
-
 
 const drawerWidth = 200;
 
@@ -40,9 +35,7 @@ function Dashboard(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     let { path, url } = useRouteMatch();
-    const { admin } = useAuth();
-
-
+    const { admin, logout } = useAuth();
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
@@ -51,23 +44,15 @@ function Dashboard(props) {
         <div>
             <Toolbar />
             <Divider />
-            <Link style={{ textDecoration: 'none'}} to="/product"><Button color="inherit">Product</Button></Link>
-            <Link style={{ textDecoration: 'none' }} to={`${url}`}><Button color="inherit">Dashboard</Button></Link>
-           
-            
-          
-               { admin && <Box>
-                <Link style={{ textDecoration: 'none' }} to={`${url}/makeAdmin`}><Button color="inherit">Make Admin</Button></Link>
-                <Link style={{ textDecoration: 'none' }} to={`${url}/payment`}><Button color="inherit">Payment </Button></Link>
-                <Link style={{ textDecoration: 'none' }} to={`${url}/myOrder`}><Button color="inherit">My Order</Button></Link>
-               </Box>
-
-               }
-               
-           
-
-           
-            <List>
+            <Link to="/product"><Button style={{textDecoration:'none'}} color="inherit">Product</Button></Link><br/>
+            <Link to={`${url}`}><Button color="inherit">Dashboard</Button></Link><br/>
+            <Link to={`${url}`}><Button color="inherit">Payment</Button></Link><br />
+            <Link to={`${url}`}><Button onClick={logout} color="inherit">Log Out</Button></Link><br />
+            {admin && <Box>
+                <Link to={`${url}/makeAdmin`}><Button color="inherit">Make Admin</Button></Link>
+                <Link to={`${url}/manageallorder`}><Button color="inherit">Manage All Order</Button></Link>
+            </Box>}
+            {/* <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem button key={text}>
                         <ListItemIcon>
@@ -76,7 +61,7 @@ function Dashboard(props) {
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
-            </List>
+            </List> */}
         </div>
     );
 
@@ -146,25 +131,32 @@ function Dashboard(props) {
 
                 <Switch>
                     <Route exact path={path}>
-                        <DashboardHome></DashboardHome>
+                       <DashboardHome></DashboardHome>
                     </Route>
+                    <Route exact path={path}>
+                        <Payment></Payment>
+                    </Route>
+                   
                     <AdminRoute path={`${path}/makeAdmin`}>
                         <MakeAdmin></MakeAdmin>
-
                     </AdminRoute>
-                    <AdminRoute path={`${path}/payment`}>
-                        <Payment></Payment>
-                       
-
+                    <AdminRoute path={`${path}/manageallorder`}>
+                        <ManageAllOrder></ManageAllOrder>
+                        
                     </AdminRoute>
                 </Switch>
-
 
             </Box>
         </Box>
     );
 }
 
-
+Dashboard.propTypes = {
+    /**
+     * Injected by the documentation to work in an iframe.
+     * You won't need it on your project.
+     */
+    window: PropTypes.func,
+};
 
 export default Dashboard;
